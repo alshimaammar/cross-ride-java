@@ -75,14 +75,17 @@ public class RideServiceImpl implements RideService {
 								|| LocalDateTime.parse(ride.getEndTime()).isBefore(endTime)))
 				.collect(Collectors.toList());
 
+		// initialize map of driver and its rides info
 		Map<Person, DriverRide> driversMap = new HashMap<>();
 
 		for (Ride ride : rides) {
 
+			// Check to add rides to its driver
 			if (driversMap.containsKey(ride.getDriver())) {
 				driversMap.get(ride.getDriver()).addRide(ride);
 			} else {
 				DriverRide driverRides = new DriverRide(ride.getDriver());
+				// update ride info
 				driverRides.addRide(ride);
 				driversMap.put(ride.getDriver(), driverRides);
 			}
@@ -90,8 +93,11 @@ public class RideServiceImpl implements RideService {
 
 		Set<DriverRide> driverRides = new TreeSet<>(driversMap.values());
 
+		// initialize result list
 		List<TopDriverDTO> result = new ArrayList<>();
 
+		// get only Top 5 drivers with max total duration value and calculate
+		// their average
 		for (DriverRide driverRide : driverRides.stream().limit(count).collect(Collectors.toList())) {
 			result.add(new TopDriverDTO(driverRide.getDriver().getName(), driverRide.getDriver().getEmail(),
 					driverRide.getTotalRideDurationInSeconds(), driverRide.getMaxRideDurationInSecods(),
@@ -102,6 +108,11 @@ public class RideServiceImpl implements RideService {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @author alshimaa.ammar inner class which can calculate the info which we
+	 *         need about every driver
+	 */
 	class DriverRide implements Comparable<DriverRide> {
 
 		private Person driver;
@@ -145,6 +156,9 @@ public class RideServiceImpl implements RideService {
 			totalDistance += ride.getDistance();
 		}
 
+		/**
+		 * to compare between total rides duration
+		 */
 		@Override
 		public int compareTo(DriverRide driverRides) {
 
