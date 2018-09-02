@@ -12,10 +12,10 @@ import com.crossover.techtrial.model.Person;
  *
  */
 public interface PersonService {
-  public List<Person> getAll();
+   List<Person> getAll();
   
-  public Person save(Person p);
+   Person save(Person p);
   
-  public Person findById(Long personId);
+   Person findById(Long personId);
   
 }
